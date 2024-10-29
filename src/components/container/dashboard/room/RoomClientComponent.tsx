@@ -1,0 +1,31 @@
+'use client';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { blockAccess } from '@/lib/blockAccess';
+import { useToast } from '@/components/ui/use-toast';
+
+export default function RoomClientComponent({ children }: { children: React.ReactNode }) {
+  const { toast } = useToast();
+  const router = useRouter();
+
+  useEffect(() => {
+    blockAccess(['admin'], router, '/', 'Access Forbidden!');
+
+    if (localStorage.getItem('message')) {
+      const message = localStorage.getItem('message');
+
+      toast({
+        description: message,
+        variant: 'default',
+      });
+
+      localStorage.removeItem('message');
+    };
+  }, []);
+
+  return (
+    <>
+      {children}
+    </>
+  );
+};
